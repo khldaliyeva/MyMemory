@@ -9,9 +9,10 @@ import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.RecyclerView
+import com.khldaliyeva.mymemory.models.BoardSize
 import kotlin.math.min
 
-class MemoryBoardAdapter(private val context: Context, private val numTiles: Int) :
+class MemoryBoardAdapter(private val context: Context, private val boardSize: BoardSize) :
     RecyclerView.Adapter<MemoryBoardAdapter.TileViewHolder>() {
 
     companion object {
@@ -21,19 +22,20 @@ class MemoryBoardAdapter(private val context: Context, private val numTiles: Int
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TileViewHolder {
-        val tileWidth = parent.width / 2 - (2 * MARGIN_SIZE)
-        val tileHeight = parent.height / 4 - (2 * MARGIN_SIZE)
+        val tileWidth = parent.width / boardSize.getNumColumns() - (2 * MARGIN_SIZE)
+        val tileHeight = parent.height / boardSize.getNumRows() - (2 * MARGIN_SIZE)
         val tileSideLength = min(tileWidth, tileHeight)
 
         val view = LayoutInflater.from(context).inflate(R.layout.tile, parent, false)
-        val layoutParams = view.findViewById<CardView>(R.id.cardView).layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams =
+            view.findViewById<CardView>(R.id.cardView).layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.width = tileSideLength
         layoutParams.height = tileSideLength
         layoutParams.setMargins(MARGIN_SIZE)
         return TileViewHolder(view)
     }
 
-    override fun getItemCount() = numTiles
+    override fun getItemCount() = boardSize.numTiles
 
     override fun onBindViewHolder(holder: TileViewHolder, position: Int) {
         holder.bind(position)
