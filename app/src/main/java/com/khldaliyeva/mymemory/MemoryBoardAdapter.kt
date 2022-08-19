@@ -10,12 +10,14 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.RecyclerView
 import com.khldaliyeva.mymemory.models.BoardSize
+import com.khldaliyeva.mymemory.models.Tile
 import kotlin.math.min
 
 class MemoryBoardAdapter(
     private val context: Context,
     private val boardSize: BoardSize,
-    private val tileImages: List<Int>
+    private val tiles: List<Tile>,
+    private val tileClickListener: TileClickListener
 ) :
     RecyclerView.Adapter<MemoryBoardAdapter.TileViewHolder>() {
 
@@ -23,6 +25,10 @@ class MemoryBoardAdapter(
         private const val TAG = "MemoryBoardAdapter"
 
         private const val MARGIN_SIZE = 10
+    }
+
+    interface TileClickListener {
+        fun onTileClicked(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TileViewHolder {
@@ -49,9 +55,11 @@ class MemoryBoardAdapter(
         private val imageButton: ImageButton = itemView.findViewById(R.id.imageButton)
 
         fun bind(position: Int) {
-            imageButton.setImageResource(tileImages[position])
+            val tile = tiles[position]
+            imageButton.setImageResource(if (tile.isFlipped) tile.identifier else R.drawable.ic_launcher_background)
             imageButton.setOnClickListener {
                 Log.i(TAG, "Tapped on position: $position")
+                tileClickListener.onTileClicked(position)
             }
         }
 
