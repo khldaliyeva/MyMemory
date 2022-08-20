@@ -1,10 +1,12 @@
 package com.khldaliyeva.mymemory
 
+import android.animation.ArgbEvaluator
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         rvBoard = findViewById(R.id.rvBoard)
         tvNumMoves = findViewById(R.id.tvNumMoves)
         tvNumPairs = findViewById(R.id.tvNumPairs)
+
+        tvNumPairs.setTextColor(ContextCompat.getColor(this@MainActivity, R.color.color_progress_none))
 
         memoryGame = MemoryGame(boardSize)
 
@@ -68,6 +72,12 @@ class MainActivity : AppCompatActivity() {
 
         if (memoryGame.flipTile(position)) {
             Log.i(TAG, "Found a match! Num pairs found: ${memoryGame.numPairsMatched}")
+            val color = ArgbEvaluator().evaluate(
+                memoryGame.numPairsMatched.toFloat() / boardSize.getNumPairs(),
+                ContextCompat.getColor(this@MainActivity, R.color.color_progress_none),
+                ContextCompat.getColor(this@MainActivity, R.color.color_progress_full)
+            ) as Int
+            tvNumPairs.setTextColor(color)
             tvNumPairs.text = "Pairs: ${memoryGame.numPairsMatched} / ${boardSize.getNumPairs()}"
             if (memoryGame.haveWonGame()) {
                 Snackbar.make(clRoot, "You won! Congratulations!", Snackbar.LENGTH_LONG).show()
