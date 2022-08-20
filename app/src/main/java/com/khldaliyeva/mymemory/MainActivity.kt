@@ -3,9 +3,11 @@ package com.khldaliyeva.mymemory
 import android.animation.ArgbEvaluator
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -54,15 +56,42 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.mi_refresh -> {
                 if (memoryGame.getNumMoves() > 0 && !memoryGame.haveWonGame()) {
-                    showAlertDialog("Quit your current game?", null, View.OnClickListener {
+                    showAlertDialog("Quit your current game?", null) {
                         setupBoard()
-                    })
+                    }
                 } else {
                     setupBoard()
                 }
+                return true
+            }
+
+            R.id.mi_new_size -> {
+                showNewSizeDialog()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showNewSizeDialog() {
+        val boardSizeView =
+            LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_board_size, null)
+        val radioGroupBoardSize = boardSizeView.findViewById<RadioGroup>(R.id.radioGroup)
+
+        when (boardSize) {
+            BoardSize.EASY -> radioGroupBoardSize.check(R.id.rbEasy)
+            BoardSize.MEDIUM -> radioGroupBoardSize.check(R.id.rbMedium)
+            BoardSize.HARD -> radioGroupBoardSize.check(R.id.rbHard)
+        }
+
+        showAlertDialog("Choose new size", boardSizeView) {
+            boardSize = when (radioGroupBoardSize.checkedRadioButtonId) {
+                R.id.rbEasy -> BoardSize.EASY
+                R.id.rbMedium -> BoardSize.MEDIUM
+                else -> BoardSize.HARD
+            }
+            setupBoard()
+        }
     }
 
     private fun showAlertDialog(
