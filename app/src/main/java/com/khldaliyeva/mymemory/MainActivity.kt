@@ -3,7 +3,11 @@ package com.khldaliyeva.mymemory
 import android.animation.ArgbEvaluator
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -38,10 +42,65 @@ class MainActivity : AppCompatActivity() {
         tvNumMoves = findViewById(R.id.tvNumMoves)
         tvNumPairs = findViewById(R.id.tvNumPairs)
 
-        tvNumPairs.setTextColor(ContextCompat.getColor(this@MainActivity, R.color.color_progress_none))
+        setupBoard()
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mi_refresh -> {
+                if (memoryGame.getNumMoves() > 0 && !memoryGame.haveWonGame()) {
+                    showAlertDialog("Quit your current game?", null, View.OnClickListener {
+                        setupBoard()
+                    })
+                } else {
+                    setupBoard()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showAlertDialog(
+        title: String,
+        view: View?,
+        positiveButtonClickListener: View.OnClickListener
+    ) {
+        AlertDialog.Builder(this@MainActivity)
+            .setTitle(title)
+            .setView(view)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("OK") { _, _ ->
+                positiveButtonClickListener.onClick(null)
+            }.show()
+    }
+
+    private fun setupBoard() {
+        when (boardSize) {
+            BoardSize.EASY -> {
+                tvNumMoves.text = "Easy: 4 x 2"
+                tvNumPairs.text = "Pairs: 0 / 4"
+            }
+            BoardSize.MEDIUM -> {
+                tvNumMoves.text = "Medium: 6 x 3"
+                tvNumPairs.text = "Pairs: 0 / 9"
+            }
+            BoardSize.HARD -> {
+                tvNumMoves.text = "Hard: 6 x 4"
+                tvNumPairs.text = "Pairs: 0 / 12"
+            }
+        }
+        tvNumPairs.setTextColor(
+            ContextCompat.getColor(
+                this@MainActivity,
+                R.color.color_progress_none
+            )
+        )
         memoryGame = MemoryGame(boardSize)
-
         adapter = MemoryBoardAdapter(
             this@MainActivity,
             boardSize,
@@ -50,10 +109,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onTileClicked(position: Int) {
                     updateGameWithFlip(position)
                 }
-
             }
         )
-
         rvBoard.adapter = adapter
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this@MainActivity, boardSize.getNumColumns())
