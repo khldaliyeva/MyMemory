@@ -30,8 +30,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:padding="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="Moves: 0" />
+                android:text="Moves: 0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -47,8 +47,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:padding="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="Pairs: 0 / 4" />
+                android:text="Pairs: 0 / 4"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

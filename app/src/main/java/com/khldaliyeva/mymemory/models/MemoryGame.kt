@@ -7,6 +7,7 @@ class MemoryGame(private val boardSize: BoardSize) {
     val tiles: List<Tile>
     var numPairsMatched = 0
 
+    private var numTileFlips = 0
     private var indexOfSingleSelectedTile: Int? = null
 
     init {
@@ -19,6 +20,7 @@ class MemoryGame(private val boardSize: BoardSize) {
     }
 
     fun flipTile(position: Int): Boolean {
+        ++numTileFlips
         val tile = tiles[position]
 
         var foundMatch = false
@@ -58,5 +60,9 @@ class MemoryGame(private val boardSize: BoardSize) {
 
     fun isTileFlipped(position: Int): Boolean {
         return tiles[position].isFlipped
+    }
+
+    fun getNumMoves(): Int {
+        return numTileFlips / 2
     }
 }

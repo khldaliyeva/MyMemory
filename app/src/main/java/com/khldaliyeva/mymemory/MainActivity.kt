@@ -62,13 +62,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (memoryGame.isTileFlipped(position)) {
-            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_SHORT).show()
             return
         }
 
         if (memoryGame.flipTile(position)) {
             Log.i(TAG, "Found a match! Num pairs found: ${memoryGame.numPairsMatched}")
+            tvNumPairs.text = "Pairs: ${memoryGame.numPairsMatched} / ${boardSize.getNumPairs()}"
+            if (memoryGame.haveWonGame()) {
+                Snackbar.make(clRoot, "You won! Congratulations!", Snackbar.LENGTH_LONG).show()
+            }
         }
+
+        tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
     }
 }
